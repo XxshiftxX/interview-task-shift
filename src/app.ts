@@ -7,13 +7,14 @@ export class App {
 
   constructor(private readonly extensions: Extension[]) {
     this.client = new Client({
-      intents: ["Guilds", "DirectMessages"],
+      intents: ["Guilds", "DirectMessages", "MessageContent", "GuildMessages"],
     })
     this.commands = new CommandClient(this.client)
   }
 
   public async boot() {
     await this.commands.enableApplicationCommandsExtension({})
+    await this.commands.enableTextCommandsExtension({ prefix: "!" })
 
     Promise.all(this.getModuleRegisterPromises())
 
