@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node src",
-    "start:dev": "ts-node-dev --clear --respawn src",
+    "start": "ts-node -r tsconfig-paths/register src",
+    "start:dev": "ts-node-dev -r tsconfig-paths/register --clear --respawn src",
     "test": "c8 ava"
   },
   "repository": {
@@ -74,6 +74,7 @@
     "@pikokr/command.ts": "^5.0.3",
     "discord-api-types": "^0.37.20",
     "discord.js": "^14.7.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "mongoose": "^6.7.4"
   }
 }
