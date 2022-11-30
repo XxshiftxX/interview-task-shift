@@ -1,5 +1,6 @@
 import { CommandClient, Extension } from "@pikokr/command.ts"
 import { Client } from "discord.js"
+import mongoose from "mongoose"
 
 export class App {
   private readonly client: Client
@@ -13,6 +14,11 @@ export class App {
   }
 
   public async boot() {
+    const connectionUrl = process.env.MONGO_CONNECTION_URL
+    if (!connectionUrl) throw new Error("process.env.MONGO_CONNECTION_URL not found")
+
+    await mongoose.connect(connectionUrl)
+
     await this.commands.enableApplicationCommandsExtension({})
     await this.commands.enableTextCommandsExtension({ prefix: "!" })
 
