@@ -6,8 +6,8 @@ export class UserRepository {
     return User.findOne({ id })
   }
 
-  public async createUser(username: string): Promise<IUser> {
-    return User.create({ username })
+  public async createUser(id: string, username: string): Promise<IUser> {
+    return User.create({ id, username })
   }
 
   public async saveUser(user: IUser) {
