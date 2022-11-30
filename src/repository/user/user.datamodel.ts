@@ -10,7 +10,15 @@ const userSchema = new Schema<IUser>({
 })
 
 userSchema.virtual("getLikeLevel").get(function (): number {
-  return this.likability
+  const { likability } = this
+
+  if (likability >= 1500) return 5
+  if (likability >= 700) return 4
+  if (likability >= 200) return 3
+  if (likability >= 30) return 2
+  if (likability >= -5) return 1
+
+  return 0
 })
 
 export const User = model("users", userSchema)
