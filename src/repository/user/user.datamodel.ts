@@ -1,5 +1,5 @@
 import { model, Schema, Types } from "mongoose"
-import { IUser } from "src/domain/user/user.entity"
+import { getLikeLevel, IUser } from "src/domain/user/user.entity"
 
 const userSchema = new Schema<IUser>({
   id: { type: String, required: true },
@@ -9,16 +9,6 @@ const userSchema = new Schema<IUser>({
   badges: { type: [Types.ObjectId], required: true, default: [] },
 })
 
-userSchema.virtual("getLikeLevel").get(function (): number {
-  const { likability } = this
-
-  if (likability >= 1500) return 5
-  if (likability >= 700) return 4
-  if (likability >= 200) return 3
-  if (likability >= 30) return 2
-  if (likability >= -5) return 1
-
-  return 0
-})
+userSchema.virtual("likeLevel").get(getLikeLevel)
 
 export const User = model("users", userSchema)
