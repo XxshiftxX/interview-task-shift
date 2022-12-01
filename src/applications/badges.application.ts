@@ -1,8 +1,7 @@
 import { BadgeDocument, BadgeVirtuals } from "src/domain/badge/badge.entity"
 import { User, UserDocument } from "src/domain/user/user.entity"
 import { BusinessError } from "src/utils/business-error"
-
-type Replace<T, R> = Omit<T, keyof R> & R
+import { Replace } from "src/utils/util-types"
 
 export class BadgeApplication {
   public async getUserBadges(userId: string) {

@@ -1,5 +1,5 @@
 import { model, Model, Schema } from "mongoose"
-import { Empty } from "src/utils/empty"
+import { Empty } from "src/utils/util-types"
 
 export interface BadgeDocument extends Document {
   title: string
