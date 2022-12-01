@@ -1,5 +1,6 @@
 import { applicationCommand, Extension } from "@pikokr/command.ts"
 import { ApplicationCommandType, ChatInputCommandInteraction } from "discord.js"
+import { User } from "src/domain/user/user.entity"
 
 export class PingController extends Extension {
   @applicationCommand({
@@ -8,6 +9,7 @@ export class PingController extends Extension {
     description: "핑 하면 퐁 해요",
   })
   async ping(interaction: ChatInputCommandInteraction) {
-    await interaction.reply("퐁!")
+    const ping = new Date().getTime() - interaction.createdAt.getTime()
+    await interaction.reply(`퐁! 현재 핑: ${ping}ms`)
   }
 }
