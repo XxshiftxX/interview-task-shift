@@ -69,8 +69,6 @@
     ]
   },
   "dependencies": {
-    "@discordjs/builders": "^1.4.0",
-    "@discordjs/rest": "^1.4.0",
     "@pikokr/command.ts": "^5.0.3",
     "discord-api-types": "^0.37.20",
     "discord.js": "^14.7.0",
