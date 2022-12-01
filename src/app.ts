@@ -18,6 +18,7 @@ export class App {
     if (!connectionUrl) throw new Error("process.env.MONGO_CONNECTION_URL not found")
 
     await mongoose.connect(connectionUrl)
+    await import("./domain/import-mongoose")
 
     await this.commands.enableApplicationCommandsExtension({})
     await this.commands.enableTextCommandsExtension({ prefix: "!" })
