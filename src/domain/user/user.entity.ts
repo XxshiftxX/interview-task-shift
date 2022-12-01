@@ -6,7 +6,7 @@ export interface UserDocument extends Document {
   username: string
   likability: number
   battery: number
-  badges: string[]
+  badges: { badge: string; createdAt: Date }[]
   verifiedAt?: Date
 }
 
@@ -20,7 +20,12 @@ const userSchema = new Schema<UserDocument, Model<UserDocument>, Empty, Empty, U
     username: { type: String, required: true },
     likability: { type: Number, required: true, default: 0 },
     battery: { type: Number, required: true, default: 100 },
-    badges: { type: [Types.ObjectId], required: true, default: [] },
+    badges: [
+      {
+        badge: { type: Types.ObjectId, required: true, ref: "badges" },
+        createdAt: { type: Date, required: true, default: Date.now },
+      },
+    ],
   },
   {
     virtuals: {
