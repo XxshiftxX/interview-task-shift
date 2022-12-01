@@ -1,4 +1,4 @@
-import { BadgeDocument, BadgeVirtuals } from "src/domain/badge/badge.entity"
+import { Badge, BadgeDocument, BadgeVirtuals } from "src/domain/badge/badge.entity"
 import { User, UserDocument } from "src/domain/user/user.entity"
 import { BusinessError } from "src/utils/business-error"
 import { Replace } from "src/utils/util-types"
@@ -11,5 +11,12 @@ export class BadgeApplication {
     if (!user) return new BusinessError("user-not-found")
 
     return user.badges.map((badge) => badge.badge)
+  }
+
+  public async getBadge(badgeId: string) {
+    const badge = await Badge.findOne({ _id: badgeId })
+    if (!badge) return new BusinessError("badge-not-found")
+
+    return badge
   }
 }
