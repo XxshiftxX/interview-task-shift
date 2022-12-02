@@ -1,7 +1,6 @@
 import { applicationCommand, Extension, listener, option } from "@pikokr/command.ts"
 import {
   ApplicationCommandOptionType,
-  User,
   ApplicationCommandType,
   ChatInputCommandInteraction,
   ActionRowBuilder,
@@ -12,6 +11,7 @@ import {
 } from "discord.js"
 import { BadgeApplication } from "src/applications/badges.application"
 import { isBusinessError } from "src/utils/business-error"
+import { formatDate } from "src/utils/date"
 
 export class BadgeController extends Extension {
   private readonly application = new BadgeApplication()
@@ -57,11 +57,7 @@ export class BadgeController extends Extension {
         )
     )
 
-    await interaction.reply({
-      content: "Pong!",
-      embeds: [badgeInfoEmbed],
-      components: [badgeSelectRow],
-    })
+    await interaction.reply({ embeds: [badgeInfoEmbed], components: [badgeSelectRow] })
   }
 
   @listener({
@@ -88,5 +84,31 @@ export class BadgeController extends Extension {
       .setDescription(result.requirements)
 
     await interaction.update({ embeds: [badgeInfoEmbed] })
+  }
+
+  @applicationCommand({
+    type: ApplicationCommandType.ChatInput,
+    name: "배지랭킹",
+    description: "배지 랭킹 보여줘요",
+  })
+  async getBadgeRankings(interaction: ChatInputCommandInteraction) {
+    const result = await this.application.getBadgeRanking()
+
+    const badgeRankingSelectMenu = new StringSelectMenuBuilder()
+      .setCustomId("badge-ranking-select")
+      .setPlaceholder("가장 많은 크시 배지를 발견한 사람들!")
+      .addOptions(
+        ...result.map((rank, index) => ({
+          label: `${index + 1}. ${rank.username} (${rank.totalBadgeCount}개, ${formatDate(
+            rank.achievedAt
+          )} 달성)`,
+          value: rank.id,
+        }))
+      )
+    const badgeRankingSelectRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+      badgeRankingSelectMenu
+    )
+
+    await interaction.reply({ components: [badgeRankingSelectRow] })
   }
 }

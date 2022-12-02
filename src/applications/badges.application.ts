@@ -19,4 +19,26 @@ export class BadgeApplication {
 
     return badge
   }
+
+  public async getBadgeRanking() {
+    type Ranking = { id: string; username: string; totalBadgeCount: number; achievedAt: Date }
+    const rankings = await User.aggregate<Ranking>([
+      {
+        $project: {
+          id: 1,
+          username: 1,
+          totalBadgeCount: { $size: "$badges" },
+          achievedAt: { $max: "$badges.createdAt" },
+        },
+      },
+      {
+        $sort: { totalBadgeCount: -1, achievedAt: 1 },
+      },
+      {
+        $limit: 20,
+      },
+    ])
+
+    return rankings
+  }
 }
