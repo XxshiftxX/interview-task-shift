@@ -16,6 +16,10 @@ export class ConversationController extends Extension {
     const pureContent = content.split(" ").slice(1).join(" ")
     if (!pureContent) return message.reply("네?")
 
+    if (pureContent.match(/^\d+(((\+|\-|\*|\/)\d+)*)$/)) {
+      return message.reply(`${this.application.calculateFormula(pureContent)}`)
+    }
+
     const result = await this.application.converse(id, pureContent)
 
     if (isBusinessError(result)) {

@@ -15,4 +15,8 @@ export class ConversationApplication {
 
     return { user, reaction }
   }
+
+  public calculateFormula(formula: string) {
+    return eval(formula)
+  }
 }
