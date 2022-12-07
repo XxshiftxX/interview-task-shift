@@ -19,10 +19,11 @@ export class ConversationController extends Extension {
     const message = remains.join(" ")
     if (!message) return payload.reply("네?")
 
-    if (message.match(/^\d+(((\+|\-|\*|\/)\d+)*)$/)) {
-      return payload.reply(`${this.application.calculateFormula(message)}`)
-    }
+    /** Convert to another route */
+    const isFormula = message.match(/^\d+(((\+|\-|\*|\/)\d+)*)$/)
+    if (isFormula) return this.calculateFormula(payload, message)
 
+    /** Normal route */
     const result = await this.application.converse(id, message)
 
     if (isBusinessError(result)) {
@@ -37,5 +38,15 @@ export class ConversationController extends Extension {
     const filledMessage = result.reaction.reaction.replace("(username)", result.user.username)
 
     await payload.reply(filledMessage)
+  }
+
+  private calculateFormula(payload: Message, message: string) {
+    const result = this.application.calculateFormula(message)
+
+    if (!result && result !== 0) {
+      return payload.reply("비정상적인 수식이에요!")
+    }
+
+    payload.reply(`답은 ${result}에요!`)
   }
 }
