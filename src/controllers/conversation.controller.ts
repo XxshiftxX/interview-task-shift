@@ -1,38 +1,36 @@
-import { command, Extension } from "@pikokr/command.ts"
-import { Message } from "discord.js"
+import { Extension, listener } from "@pikokr/command.ts"
+import { Message, Events } from "discord.js"
 import { ConversationApplication } from "src/applications/conversation.application"
 import { isBusinessError } from "src/utils/business-error"
 
 export class ConversationController extends Extension {
   private readonly application = new ConversationApplication()
 
-  @command({ name: "test" })
-  async converse(message: Message) {
-    const {
-      content,
-      author: { id },
-    } = message
+  @listener({ event: Events.MessageCreate })
+  async converse({ content, author: { id }, reply }: Message) {
+    const [command, ...remains] = content.split(" ")
+    if (command !== "크시야") return
 
-    const pureContent = content.split(" ").slice(1).join(" ")
-    if (!pureContent) return message.reply("네?")
+    const message = remains.join(" ")
+    if (!message) return reply("네?")
 
-    if (pureContent.match(/^\d+(((\+|\-|\*|\/)\d+)*)$/)) {
-      return message.reply(`${this.application.calculateFormula(pureContent)}`)
+    if (message.match(/^\d+(((\+|\-|\*|\/)\d+)*)$/)) {
+      return reply(`${this.application.calculateFormula(message)}`)
     }
 
-    const result = await this.application.converse(id, pureContent)
+    const result = await this.application.converse(id, message)
 
     if (isBusinessError(result)) {
       switch (result.error) {
         case "user-not-found":
-          return message.reply("유저 정보를 찾을 수 없어요")
+          return reply("유저 정보를 찾을 수 없어요")
         case "reaction-not-found":
-          return message.reply("모르는 말이에요")
+          return reply("모르는 말이에요")
       }
     }
 
     const filledMessage = result.reaction.reaction.replace("(username)", result.user.username)
 
-    await message.reply(filledMessage)
+    await reply(filledMessage)
   }
 }

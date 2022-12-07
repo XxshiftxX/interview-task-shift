@@ -21,7 +21,6 @@ export class App {
     await import("./domain/import-mongoose")
 
     await this.commands.enableApplicationCommandsExtension({})
-    await this.commands.enableTextCommandsExtension({ prefix: "!" })
 
     Promise.all(this.getModuleRegisterPromises())
 
